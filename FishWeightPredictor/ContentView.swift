@@ -16,7 +16,8 @@ struct ContentView: View {
     @State private var species = String("");
     @State private var alertTitle = String("");
     @State private var alertMessage = String("");
-    
+    @State private var showingAlert = false;
+    @State private var msg = String("");
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -41,8 +42,7 @@ struct ContentView: View {
             Text("Värdet är \(species)")
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-        }
-        VStack {
+            
             Text("Specify length of the fish:")
                 .font(.headline)
             
@@ -51,22 +51,38 @@ struct ContentView: View {
                 .padding()
             
             Button(action:calculateFishWeight){
-                Label("Calculate", systemImage: "fish")
+                Label("Calculate", systemImage: "fish")	
+                
             }
+            
+            Text(alertMessage)
             
             
             .navigationTitle("Fish Weight Predictor")
-                .toolbar {
-                    Button ("Calculate", action: calculateFishWeight)
-                }
+            .toolbar {
+                Button ("Calculate", action: calculateFishWeight)
+                
+                
+                
+            
+        }
+            
+            
+            .alert(alertTitle, isPresented: $showingAlert){
+                Button("OK"){}
+            
+            } message: {
+                Text(alertMessage)
+            }
             
         }
         .padding()
         
     }
-    
+       
+       
 
-    
+     
     func calculateFishWeight(){
         do {
             let config = MLModelConfiguration()
@@ -81,9 +97,11 @@ struct ContentView: View {
         }catch {
             alertTitle = "Error"
             alertMessage = "Sadly an error was encountered while calculating the fish weight."
+            showingAlert = true
         }
     }
 }
+
 
 
 
