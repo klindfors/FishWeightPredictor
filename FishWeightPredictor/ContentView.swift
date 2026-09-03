@@ -38,15 +38,14 @@ struct ContentView: View {
             Text("What species of fish?")
                 .font(.headline)
             TextField("Specify species of the fish", text: $species)
-                .padding()
-            Text("Värdet är \(species)")
+            Text("Species was specified as \(species)")
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
             Text("Specify length of the fish:")
                 .font(.headline)
             
-            TextField("Specify length in mms", value: $fishlength, formatter : formatter)
+            TextField("Specify length in millimeters", value: $fishlength, formatter : formatter)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
@@ -54,49 +53,29 @@ struct ContentView: View {
                 Label("Calculate", systemImage: "fish")	
                 
             }
-            
             Text(alertMessage)
-            
-            
-            .navigationTitle("Fish Weight Predictor")
-            .toolbar {
-                Button ("Calculate", action: calculateFishWeight)
-                
-                
-                
-            
-        }
-            
-            
-            .alert(alertTitle, isPresented: $showingAlert){
-                Button("OK"){}
-            
-            } message: {
-                Text(alertMessage)
-            }
             
         }
         .padding()
         
     }
        
-       
-
-     
+    
     func calculateFishWeight(){
         do {
+            alertMessage = "";
             let config = MLModelConfiguration()
             let model = try MyTabularRegressor_2(configuration: config)
             let prediction = try model.prediction(species: 1, fishlength : fishlength)
             print("Prediction :\(prediction)")
             fishweight = prediction.fishweight
             print(fishweight)
-            alertTitle = "Vi har fått ett resultat!"
-            alertMessage = "The fish weighs : \(fishweight) gram"
+            alertTitle = "Fish weight calculated!"
+            alertMessage = "The fish is predicted to weigh : \(fishweight) gram"
             
         }catch {
             alertTitle = "Error"
-            alertMessage = "Sadly an error was encountered while calculating the fish weight."
+            alertMessage = "Sadly an error was encountered while predicting the fish weight."
             showingAlert = true
         }
     }
